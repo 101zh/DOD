@@ -20,8 +20,17 @@ def connect_pico():
 
 # Function to send X coordinate to Pico
 def send_x_coordinate_to_pico(pico, x, frame_width):
+    with open("shared.info.txt", "r") as file:
+        info : str = file.read()
+        if info == "True":
+            off_task = True
+        else:
+            off_task = False
+
     if not off_task:
+        print("not off task")
         return
+    print("on task")
 
     try:
         # Convert X coordinate to servo angle (0-180 degrees)
