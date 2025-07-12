@@ -3,6 +3,8 @@ import dlib
 import serial
 import time
 
+off_task : bool = False
+
 # Define the function to connect to Raspberry Pi Pico
 def connect_pico():
     while True:
@@ -18,16 +20,19 @@ def connect_pico():
 
 # Function to send X coordinate to Pico
 def send_x_coordinate_to_pico(pico, x, frame_width):
+    if not off_task:
+        return
+
     try:
         # Convert X coordinate to servo angle (0-180 degrees)
         # Map X position (0 to frame_width) to servo angle (0 to 180)
-        servo_angle = int((x / frame_width) * 180)
+        servo_angle = int(((frame_width-x) / frame_width) * 180)
         
         # Clamp to valid servo range
         servo_angle = max(0, min(180, servo_angle))
         
         # Send angle to Pico
-        command = f"SERVO:{servo_angle}\n"
+        command = f"~b{servo_angle}\n"
         pico.write(command.encode())
         print(f"Sent X: {x} -> Servo Angle: {servo_angle}")
     except serial.SerialException:
@@ -42,7 +47,7 @@ OUTPUT_SIZE_HEIGHT = 600
 
 def detectAndTrackLargestFace():
     # Set camera index to 0 for the built-in webcam
-    capture = cv2.VideoCapture(0)
+    capture = cv2.VideoCapture(1)
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
     cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
     cv2.moveWindow("base-image", 0, 100)
@@ -127,11 +132,10 @@ def detectAndTrackLargestFace():
             cv2.imshow("result-image", largeResult)
 
     except KeyboardInterrupt as e:
-        print(e)
+        print(e.args)
         cv2.destroyAllWindows()
         pico.close()
         exit(0)
 
 if __name__ == '__main__':
     detectAndTrackLargestFace()
-
