@@ -6,6 +6,8 @@ import sys
 import gc
 from adafruit_motor import servo
 
+can_shoot : bool = False
+
 class DOD_servo:
     def __init__(self, pin, duty_cycle: int, frequency: int):
         self = self
@@ -45,6 +47,9 @@ class DOD_servo:
 
             self.running_to_target = False
 
+    def run_to_target_angle_fast(self):
+        self.servo.angle = self.target_angle
+
 base_servo : DOD_servo = DOD_servo(board.GP0, 2**15, 50)
 trigger_servo : DOD_servo = DOD_servo(board.GP1, 2**15, 50)
 
@@ -70,14 +75,31 @@ def remove_tags(serial_input: list):
     serial_input.pop(0)
 
 def determine_action(serial_input: list):
+    global can_shoot
+
     tag: str = serial_input[0] + serial_input[1]
     remove_tags(serial_input)
 
     if (tag == "~b"):
         base_servo.set_target_angle(serial_input)
+    elif(tag == "~s"):
+        can_shoot = True
+    elif(tag == "~r"):
+        can_shoot = False
+
+def shoot():
+    if can_shoot:
+        trigger_servo.set_target_angle(["1","8","0"])
+        trigger_servo.run_to_target_angle_fast()
+        time.sleep(1)
+        trigger_servo.set_target_angle(["0"])
+        trigger_servo.run_to_target_angle_fast()
+        time.sleep(1)
 
 while True:
     base_servo.run_to_target_angle()
-    trigger_servo.run_to_target_angle()
+    if not base_servo.running_to_target:
+        shoot()
+
 
     read_serial_input()
