@@ -3,14 +3,17 @@ import dlib
 import serial
 import time
 
-off_task : bool = False
+off_task: bool = False
 
 # Define the function to connect to Raspberry Pi Pico
+
+
 def connect_pico():
     while True:
         try:
             # Find your Pico's COM port (check Device Manager on Windows)
-            pico = serial.Serial('COM8', 115200)  # Adjust COM port as necessary
+            # Adjust COM port as necessary
+            pico = serial.Serial('COM8', 115200)
             time.sleep(2)  # Give time for connection to establish
             print("Connected to Raspberry Pi Pico")
             return pico
@@ -19,28 +22,17 @@ def connect_pico():
             time.sleep(5)
 
 # Function to send X coordinate to Pico
+
+
 def send_x_coordinate_to_pico(pico, x, frame_width):
-    global off_task
-    with open("shared.info.txt", "r") as file:
-        info : str = file.read()
-        if info == "True":
-            off_task = True
-        else:
-            off_task = False
-
-    if not off_task:
-        print("not off task")
-        return
-    print("off task")
-
     try:
         # Convert X coordinate to servo angle (0-180 degrees)
         # Map X position (0 to frame_width) to servo angle (0 to 180)
         servo_angle = int(((frame_width-x) / frame_width) * 180)
-        
+
         # Clamp to valid servo range
         servo_angle = max(0, min(180, servo_angle))
-        
+
         # Send angle to Pico
         command = f"~b{servo_angle}\n"
         pico.write(command.encode())
@@ -50,14 +42,17 @@ def send_x_coordinate_to_pico(pico, x, frame_width):
         pico.close()
         pico = connect_pico()
 
+
 # Initialize face cascade and parameters
-faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+faceCascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 OUTPUT_SIZE_WIDTH = 775
 OUTPUT_SIZE_HEIGHT = 600
 
+
 def detectAndTrackLargestFace():
     # Set camera index to 0 for the built-in webcam
-    capture = cv2.VideoCapture(1)
+    capture = cv2.VideoCapture(0)
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
     cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
     cv2.moveWindow("base-image", 0, 100)
@@ -67,7 +62,7 @@ def detectAndTrackLargestFace():
     tracker = dlib.correlation_tracker()
     trackingFace = 0
     rectangleColor = (0, 165, 255)
-    
+
     pico = connect_pico()  # Initialize Pico connection
 
     try:
@@ -75,12 +70,11 @@ def detectAndTrackLargestFace():
             global off_task
             with open("shared.info.txt", "r") as file:
                 info: str = file.read()
-                if info == "True":
+                if info == "True" and (not off_task):
                     off_task = True
                     pico.write("~s\n".encode())
-                else:
+                elif info == "False" and (off_task):
                     off_task = False
-                    pico.write("~r\n".encode())
 
             if pico.in_waiting > 0:
                 response = pico.readline().decode().strip()
@@ -132,7 +126,7 @@ def detectAndTrackLargestFace():
                     cv2.rectangle(resultImage, (t_x, t_y),
                                   (t_x + t_w, t_y + t_h),
                                   rectangleColor, 2)
-                    
+
                     # Calculate center X position (ignore Y for horizontal tracking)
                     cX = int((t_x + t_x + t_w) / 2)
                     cY = int((t_y + t_y + t_h) / 2)
@@ -141,7 +135,8 @@ def detectAndTrackLargestFace():
                     # Draw "TARGET LOCKED" in red under the bounding box
                     font = cv2.FONT_HERSHEY_PLAIN
                     text_position = (t_x, t_y + t_h + 30)
-                    cv2.putText(resultImage, "TARGET LOCKED", text_position, font, 1, (0, 0, 255), 2, cv2.LINE_AA)
+                    cv2.putText(resultImage, "TARGET LOCKED",
+                                text_position, font, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
                     # Only send if X position changed significantly (ignore Y)
                     if abs(cX - previousX) > 5:
@@ -151,7 +146,8 @@ def detectAndTrackLargestFace():
                 else:
                     trackingFace = 0
 
-            largeResult = cv2.resize(resultImage, (OUTPUT_SIZE_WIDTH, OUTPUT_SIZE_HEIGHT))
+            largeResult = cv2.resize(
+                resultImage, (OUTPUT_SIZE_WIDTH, OUTPUT_SIZE_HEIGHT))
             cv2.imshow("base-image", baseImage)
             cv2.imshow("result-image", largeResult)
 
@@ -160,6 +156,7 @@ def detectAndTrackLargestFace():
         cv2.destroyAllWindows()
         pico.close()
         exit(0)
+
 
 if __name__ == '__main__':
     detectAndTrackLargestFace()
