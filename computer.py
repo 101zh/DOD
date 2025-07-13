@@ -10,7 +10,7 @@ def connect_pico():
     while True:
         try:
             # Find your Pico's COM port (check Device Manager on Windows)
-            pico = serial.Serial('COM7', 115200)  # Adjust COM port as necessary
+            pico = serial.Serial('COM8', 115200)  # Adjust COM port as necessary
             time.sleep(2)  # Give time for connection to establish
             print("Connected to Raspberry Pi Pico")
             return pico
@@ -20,6 +20,7 @@ def connect_pico():
 
 # Function to send X coordinate to Pico
 def send_x_coordinate_to_pico(pico, x, frame_width):
+    global off_task
     with open("shared.info.txt", "r") as file:
         info : str = file.read()
         if info == "True":
@@ -30,7 +31,7 @@ def send_x_coordinate_to_pico(pico, x, frame_width):
     if not off_task:
         print("not off task")
         return
-    print("on task")
+    print("off task")
 
     try:
         # Convert X coordinate to servo angle (0-180 degrees)
@@ -43,7 +44,7 @@ def send_x_coordinate_to_pico(pico, x, frame_width):
         # Send angle to Pico
         command = f"~b{servo_angle}\n"
         pico.write(command.encode())
-        print(f"Sent X: {x} -> Servo Angle: {servo_angle}")
+        # print(f"Sent X: {x} -> Servo Angle: {servo_angle}")
     except serial.SerialException:
         print("Lost connection to Pico. Attempting to reconnect...")
         pico.close()
@@ -71,6 +72,10 @@ def detectAndTrackLargestFace():
 
     try:
         while True:
+            if pico.in_waiting > 0:
+                response = pico.readline().decode().strip()
+                print(f"Pico responded: {response}")
+
             rc, fullSizeBaseImage = capture.read()
             baseImage = cv2.resize(fullSizeBaseImage, (320, 240))
             frame_width = baseImage.shape[1]  # Get frame width for mapping

@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 @app.route('/off-task', methods=['GET', 'POST'])
 def off_task_webhook():
+    global off_task
     timestamp = datetime.datetime.now()
     print(f"Webhook received at {timestamp} /off-task")
     off_task = True
@@ -18,6 +19,7 @@ def off_task_webhook():
 
 @app.route('/locked-in', methods=['GET', 'POST'])
 def locked_in_webhook():
+    global off_task
     timestamp = datetime.datetime.now()
     print(f"Webhook received at {timestamp} /locked-in")
     off_task = False

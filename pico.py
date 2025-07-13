@@ -3,6 +3,7 @@ import time
 import board
 import pwmio
 import sys
+import gc
 from adafruit_motor import servo
 
 class DOD_servo:
@@ -12,8 +13,12 @@ class DOD_servo:
             pin, duty_cycle=duty_cycle, frequency=frequency))
         self.current_angle = 90
         self.target_angle = 90
+        self.running_to_target = False
 
     def set_target_angle(self, angle_serial_input):
+        if self.running_to_target:
+            return
+        
         print(angle_serial_input)
         new_target = ""
 
@@ -24,6 +29,7 @@ class DOD_servo:
         self.target_angle = float(new_target)
 
     def run_to_target_angle(self):
+            self.running_to_target = True
             if self.current_angle < self.target_angle:
                 # 0 - 180 degrees, 5 degrees at a time.
                 for angle in range(self.current_angle, self.target_angle, 1):
@@ -36,6 +42,8 @@ class DOD_servo:
                     self.servo.angle = angle
                     self.current_angle = angle
                     time.sleep(0.01)
+
+            self.running_to_target = False
 
 base_servo : DOD_servo = DOD_servo(board.GP0, 2**15, 50)
 trigger_servo : DOD_servo = DOD_servo(board.GP1, 2**15, 50)
