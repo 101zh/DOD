@@ -72,6 +72,16 @@ def detectAndTrackLargestFace():
 
     try:
         while True:
+            global off_task
+            with open("shared.info.txt", "r") as file:
+                info: str = file.read()
+                if info == "True":
+                    off_task = True
+                    pico.write("~s\n".encode())
+                else:
+                    off_task = False
+                    pico.write("~r\n".encode())
+
             if pico.in_waiting > 0:
                 response = pico.readline().decode().strip()
                 print(f"Pico responded: {response}")
