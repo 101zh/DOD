@@ -89,12 +89,12 @@ def determine_action(serial_input: list):
 
 def shoot():
     if can_shoot:
-        trigger_servo.set_target_angle(["1","8","0"])
+        trigger_servo.set_target_angle(["1","0","0"])
         trigger_servo.run_to_target_angle_fast()
-        time.sleep(1)
+        time.sleep(3)
         trigger_servo.set_target_angle(["0"])
         trigger_servo.run_to_target_angle_fast()
-        time.sleep(1)
+        time.sleep(3)
 
 while True:
     base_servo.run_to_target_angle()
