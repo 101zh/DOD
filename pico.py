@@ -94,5 +94,5 @@ def shoot():
     time.sleep(1)
 
 while True:
-    base_servo.run_to_target_angle()
+    base_servo.run_to_target_angle_fast()
     read_serial_input()

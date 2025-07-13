@@ -2,8 +2,13 @@ import cv2
 import dlib
 import serial
 import time
+from p_controller import PController
 
 off_task: bool = False
+
+controller : PController =  PController(0.1, 15)
+SET_POINT : float = 160
+last_servo_angle : float = 90
 
 # Define the function to connect to Raspberry Pi Pico
 
@@ -25,18 +30,22 @@ def connect_pico():
 
 
 def send_x_coordinate_to_pico(pico, x, frame_width):
+    global last_servo_angle
     try:
+        output, at_setpoint = controller.update(SET_POINT, x)
+        print(x)
         # Convert X coordinate to servo angle (0-180 degrees)
         # Map X position (0 to frame_width) to servo angle (0 to 180)
-        servo_angle = int(((frame_width-x) / frame_width) * 180)
+        servo_angle = last_servo_angle + output
 
         # Clamp to valid servo range
-        servo_angle = max(0, min(180, servo_angle))
+        servo_angle = round(max(0, min(180, servo_angle)), 2)
 
         # Send angle to Pico
         command = f"~b{servo_angle}\n"
         pico.write(command.encode())
         # print(f"Sent X: {x} -> Servo Angle: {servo_angle}")
+        last_servo_angle = servo_angle
     except serial.SerialException:
         print("Lost connection to Pico. Attempting to reconnect...")
         pico.close()
@@ -52,7 +61,7 @@ OUTPUT_SIZE_HEIGHT = 600
 
 def detectAndTrackLargestFace():
     # Set camera index to 0 for the built-in webcam
-    capture = cv2.VideoCapture(0)
+    capture = cv2.VideoCapture(1)
     cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
     cv2.namedWindow("result-image", cv2.WINDOW_AUTOSIZE)
     cv2.moveWindow("base-image", 0, 100)
@@ -139,9 +148,11 @@ def detectAndTrackLargestFace():
                                 text_position, font, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
                     # Only send if X position changed significantly (ignore Y)
-                    if abs(cX - previousX) > 5:
-                        previousX = cX
-                        send_x_coordinate_to_pico(pico, cX, frame_width)
+                    # if abs(cX - previousX) > 5:
+                    #     previousX = cX
+                    #     send_x_coordinate_to_pico(pico, cX, frame_width)
+
+                    send_x_coordinate_to_pico(pico, cX, frame_width)
 
                 else:
                     trackingFace = 0
