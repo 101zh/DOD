@@ -6,7 +6,11 @@ https://www.youtube.com/watch?v=_19QPQVmDLk
 
 ## Project Overview
 
-This project was made as a part of [Highway Undercity](https://highway.hackclub.com), a 4 day in person Hackathon hosted by [Hack Club](https://hackclub.com) and Github. The goal of this project is to provide a funny way to discourage distractions while you are trying to be productive. The idea is to have a rubber duck on your desk that will spray water at you whenever you go on an unproductive app or website, such as Instagram Reels, Youtube Shorts, or Tiktok.
+This project was made as a part of [Highway Undercity](https://highway.hackclub.com), a 4 day in person Hackathon hosted by [Hack Club](https://hackclub.com) and Github. 
+
+Duck off Doomscrolling (or D.O.B for short) is a fun way to quit destructive/disruptive/depressing social media! Basically it is a duck that will sit on your desk while you work and squirt water on you if you open doom scrolling apps such as Instagram Reels, Youtube shorts, X, or whatever you want. 
+**
+LETS QUIT DOOMSCROLLING :D**
 
 ## Technical Details
 
