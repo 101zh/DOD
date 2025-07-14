@@ -31,7 +31,7 @@ The base of the design is a cheap water gun powered by a servo motor, servo moto
 
 ## Electrical Components
 
-There are two servos, a breaboard, breadboard power supply, 9V battery, and an orpheus pico.
+There are three servos, a breaboard, breadboard power supply, 9V battery, and an orpheus pico :D
 
 ![alt text](pictures/IMG_4682.jpeg)
 
@@ -43,9 +43,9 @@ There are two servos, a breaboard, breadboard power supply, 9V battery, and an o
 
 ## Code Details
 
-First the camera captures video, which the computer processes. Then the computer tells the pico over serial what angle the servos should be at. Through that info, the pico will then directly command the servos to move. The duck knows when to shoot via a web server, which can receive web hooks that the phone triggers over local wifi networks.
+First the camera captures video, which the computer processes to draw a box around a face via OPENCV. Then the computer tells the pico over serial what angle the servos should be at to center the midpoint of the box at the center of the screen/webcam feed. Through that info, the pico will then directly command the servos to move. The duck knows when to shoot via a web server, which can receive web hooks that the phone triggers over local wifi networks. When it is told to shoot it triggers a servo to push down on the pump to shoot the water >:D
 
-## Code Changes Needed
+## Code Changes Needed if you try this yourself!
 
 The video capture feed may need to be changed, depending on the order of webcams connected to the device
 
