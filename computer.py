@@ -6,9 +6,10 @@ from p_controller import PController
 
 off_task: bool = False
 
-controller : PController =  PController(0.1, 15)
-SET_POINT : float = 160
-last_servo_angle : float = 90
+controller: PController = PController(0.015, 15)
+SET_POINT: float = 160
+last_servo_angle: float = 90
+scanning_up: bool = True
 
 # Define the function to connect to Raspberry Pi Pico
 
@@ -26,6 +27,24 @@ def connect_pico():
             print("Failed to connect to Pico. Retrying in 5 seconds...")
             time.sleep(5)
 
+
+def pico_scan(pico: serial.Serial):
+    global scanning_up
+    global last_servo_angle
+
+    servo_angle = (last_servo_angle + 1) if scanning_up else (last_servo_angle - 1)
+
+    servo_angle = round(max(0, min(180, servo_angle)), 1)
+    command = f"~b{servo_angle}\n"
+    pico.write(command.encode())
+    last_servo_angle = servo_angle
+
+    if servo_angle >= 180:
+        scanning_up = False
+    elif servo_angle <= 0:
+        scanning_up = True
+
+
 # Function to send X coordinate to Pico
 
 
@@ -33,13 +52,12 @@ def send_x_coordinate_to_pico(pico, x, frame_width):
     global last_servo_angle
     try:
         output, at_setpoint = controller.update(SET_POINT, x)
-        print(x)
         # Convert X coordinate to servo angle (0-180 degrees)
         # Map X position (0 to frame_width) to servo angle (0 to 180)
         servo_angle = last_servo_angle + output
 
         # Clamp to valid servo range
-        servo_angle = round(max(0, min(180, servo_angle)), 2)
+        servo_angle = round(max(0, min(180, servo_angle)), 1)
 
         # Send angle to Pico
         command = f"~b{servo_angle}\n"
@@ -108,8 +126,6 @@ def detectAndTrackLargestFace():
                 maxArea = 0
                 x, y, w, h = 0, 0, 0, 0
 
-                previousX = int(0)
-
                 for (_x, _y, _w, _h) in faces:
                     if _w * _h > maxArea:
                         x, y, w, h = int(_x), int(_y), int(_w), int(_h)
@@ -147,15 +163,13 @@ def detectAndTrackLargestFace():
                     cv2.putText(resultImage, "TARGET LOCKED",
                                 text_position, font, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
-                    # Only send if X position changed significantly (ignore Y)
-                    # if abs(cX - previousX) > 5:
-                    #     previousX = cX
-                    #     send_x_coordinate_to_pico(pico, cX, frame_width)
-
                     send_x_coordinate_to_pico(pico, cX, frame_width)
 
                 else:
                     trackingFace = 0
+
+            else:
+                pico_scan(pico)
 
             largeResult = cv2.resize(
                 resultImage, (OUTPUT_SIZE_WIDTH, OUTPUT_SIZE_HEIGHT))

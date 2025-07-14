@@ -84,15 +84,18 @@ def determine_action(serial_input: list):
         base_servo.set_target_angle(serial_input)
     elif(tag == "~s"):
         shoot()
+    elif(tag == "~r"):
+        trigger_servo.set_target_angle(serial_input)
 
 def shoot():
-    trigger_servo.set_target_angle(["1","0","0"])
+    trigger_servo.set_target_angle(["1","3","5"])
     trigger_servo.run_to_target_angle_fast()
     time.sleep(1)
-    trigger_servo.set_target_angle(["0"])
+    trigger_servo.set_target_angle(["8","9"])
     trigger_servo.run_to_target_angle_fast()
     time.sleep(1)
 
 while True:
-    base_servo.run_to_target_angle_fast()
+    base_servo.run_to_target_angle()
+    trigger_servo.run_to_target_angle()
     read_serial_input()
