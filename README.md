@@ -9,8 +9,8 @@ https://www.youtube.com/watch?v=_19QPQVmDLk
 This project was made as a part of [Highway Undercity](https://highway.hackclub.com), a 4 day in person Hackathon hosted by [Hack Club](https://hackclub.com) and Github. 
 
 Duck off Doomscrolling (or D.O.B for short) is a fun way to quit destructive/disruptive/depressing social media! Basically it is a duck that will sit on your desk while you work and squirt water on you if you open doom scrolling apps such as Instagram Reels, Youtube shorts, X, or whatever you want. 
-**
-LETS QUIT DOOMSCROLLING :D**
+
+** LETS QUIT DOOMSCROLLING :D **
 
 ## Technical Details
 
