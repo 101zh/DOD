@@ -49,6 +49,7 @@ There are three servos, a breaboard, breadboard power supply, 9V battery, and an
 
 ![alt text](pictures/IMG_4652.jpeg)
 ![alt text](pictures/IMG_4674.jpeg)
+<img width="723" height="787" alt="image" src="https://github.com/user-attachments/assets/d91b8e1a-9b9e-4213-a1dd-a49180f5c08b" />
 ![alt text](pictures/IMG_4675.jpeg)
 
 ## Code Details
