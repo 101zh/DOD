@@ -1,5 +1,11 @@
 # Duck Off Doomscrolling
 
+
+
+https://github.com/user-attachments/assets/c3fc7ac2-ea54-4331-85b3-b257e8ffefa3
+
+
+
 ![alt text](pictures/IMG_4679.jpeg)
 
 https://www.youtube.com/watch?v=_19QPQVmDLk
