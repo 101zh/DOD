@@ -6,7 +6,8 @@ https://github.com/user-attachments/assets/c3fc7ac2-ea54-4331-85b3-b257e8ffefa3
 
 
 
-![alt text](pictures/IMG_4679.jpeg)
+![IMG_4679-1](https://github.com/user-attachments/assets/2a75084d-4918-42c3-aa67-4be470d5b9ad)
+
 
 https://www.youtube.com/watch?v=_19QPQVmDLk
 
@@ -43,14 +44,16 @@ The base of the design is a cheap water gun powered by a servo motor, servo moto
 
 There are three servos, a breaboard, breadboard power supply, 9V battery, and an orpheus pico :D
 
-![alt text](pictures/IMG_4682.jpeg)
+![IMG_4682](https://github.com/user-attachments/assets/3931c42e-8f21-419d-8367-65cf62e547a3)
+
 
 ## Duck Internals
 
-![alt text](pictures/IMG_4652.jpeg)
-![alt text](pictures/IMG_4674.jpeg)
+![IMG_4652](https://github.com/user-attachments/assets/88892805-1d38-48e6-859f-ab59aee0eb20)
+
+![IMG_4674](https://github.com/user-attachments/assets/987c819c-083f-4f59-816b-04e44b1bc5fb)
+
 <img width="723" height="787" alt="image" src="https://github.com/user-attachments/assets/d91b8e1a-9b9e-4213-a1dd-a49180f5c08b" />
-![alt text](pictures/IMG_4675.jpeg)
 
 ## Code Details
 
@@ -76,5 +79,6 @@ For the two shortcut iphone automations (sorry android users; you're going to ha
 
 ### QR Codes for Shortcuts
 
-![alt text](pictures/lock-in.png)
-![alt text](pictures/lock-out.png)
+<img width="300" height="300" alt="lock-in" src="https://github.com/user-attachments/assets/d221eeeb-ad79-42dd-96ea-40292d7c23b9" />
+<img width="300" height="300" alt="lock-out" src="https://github.com/user-attachments/assets/3835781c-c9a8-474e-a10a-dc7c5e63a724" />
+
